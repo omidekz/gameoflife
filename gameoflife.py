@@ -18,12 +18,14 @@ def generation(world):
 		for x in range(width):
 			lives = -1 if world[y][x] else 0
 			for ty in range(y-1, y+2):
-				"""if not 0 <= ty < height:
-					continue"""
+				if not circular_world and not 0 <= ty < height:
+					continue
 				for tx in range(x-1, x+2):
-					"""if not 0 <= tx < width:
-						continue"""
-					if world[(ty+height) % height][(tx+width)%width]:
+					if not circular_world and not 0 <= tx < width:
+						continue
+					ty = (ty + height) % height if circular_world else ty
+					tx = (tx + width) % width if circular_world else tx
+					if world[ty][tx]:
 						lives += 1
 			line.append(lives == 3 or (world[y][x] and lives == 2))
 		new_world.append(line)
@@ -39,6 +41,7 @@ if __name__ == '__main__':
 	width = configs['width']
 	height = configs['height']
 	live_pos = configs['live_possibility']
+	circular_world = configs['circular_world']
 	# create the world, in world 0 is dead and 1 is live
 	world = [[1 if random() < live_pos else 0 for _ in range(width)] for _ in range(height)]
 	while True:
